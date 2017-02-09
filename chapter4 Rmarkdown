@@ -66,6 +66,7 @@ $$\log(f_k(x))\log{(\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma_l)}e^{-\frac{1}
 
 
 As we can see the $\delta_p(x)$ was  quadratic function of x.
+
 ###4
 ####a
 On average 10% of the abailable observations will we use to make the prediction
@@ -370,29 +371,34 @@ The test error is `r e ` using logistic regression analysis
 Perform KNN on the training data
 ```{r,echo=F,warning=F}
 library(class)
-knn.train<-cbind(cylinders,displacement,horsepower,weight)[train,]
-knn.test<-cbind(cylinders,displacement,horsepower,weight)[!train,]
-train.mpg01<-mpg01[train]
-train.mpg01
+knn.train=cbind(Auto$cylinders,Auto$displacement,Auto$horsepower,Auto$weight)[train,]
+knn.test=cbind(Auto$cylinders,Auto$displacement,Auto$horsepower,Auto$weight)[!train,]
+train.mpg01=mpg01[train]
+```
 
-#k=1
+####k=1
+```{r,echo=F,warning=F}
 set.seed(1)
 knn.pred=knn(knn.train,knn.test,train.mpg01,k=1)
 table(knn.pred,Auto.test$mpg01)
 e1<-mean(knn.pred!=Auto.test$mpg01)#0.1538462
+```
 
-#k=10
+####k=10
+```{r,echo=F,warning=F}
 set.seed(1)
 knn.pred=knn(knn.train,knn.test,train.mpg01,k=10)
 table(knn.pred,Auto.test$mpg01)
 e10<-mean(knn.pred!=Auto.test$mpg01)#0.1538462
+```
 
-#k=10
+####k=10
+```{r,echo=F,warning=F}
 set.seed(1)
 knn.pred=knn(knn.train,knn.test,train.mpg01,k=100)
 table(knn.pred,Auto.test$mpg01)
 e100<-mean(knn.pred!=Auto.test$mpg01)#0.1428571
-````
+```
 k=1, test error rate is `r e1`. k=10, test error rate is `r e10`. k=100, test error rate is `r e100`.K=100 seems to perform the best. 
 
 
@@ -562,7 +568,6 @@ a<-mean(knn.pred!=Boston.test$crim01)#the test error rate 0.3517787
 
 ```
 With k=100 the test error is `r a`
-
 
 
 
