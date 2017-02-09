@@ -1,0 +1,579 @@
+---
+title: "Homework R Markdown"
+author: "Wenhui Zeng"
+date: "February 7, 2017"
+output: pdf_document
+---
+
+##1
+$$p(x)=\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$$
+
+
+$\frac{p(x)}{1-p(x)}$
+$$\frac{\frac {e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}}{1-\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}}=\frac{\frac {e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}}{\frac{1+e^{\beta_0+\beta_1x}-e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}}=\frac{\frac {e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}}{\frac{1}{1+e^{\beta_0+\beta_1x}}}=e^{\beta_0+\beta_1x}$$
+
+
+
+##2
+Assuming that $f_k(x)$ is normal, the probability that an observation $x$ is in class $k$ is given by
+$$f_k(x)=\frac{\pi_k\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_k)^2}}}{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}}$$
+while the discriminant function was 
+$$\delta_k(x)=x\frac{\mu_k}{\sigma^2}-\frac{\mu_k}{2\sigma^2}+\log(\pi_k)$$
+The question also means maxmizing $f_k(x)$ is equivalent to maxmizing $\delta_k(x)$
+Let $x$ remain fixed and observe that we are maxmizing over the parameter k. suppose that $\delta_k(x) \geq \delta_i(x)$. We will prove that $f_k(x) \geq f_i(x)$
+
+$$x\frac{\mu_k}{\sigma^2}-\frac{\mu_k}{2\sigma^2}+\log(\pi_k) \geq x\frac{\mu_i}{\sigma^2}-\frac{\mu_i}{2\sigma^2}+\log(\pi_i)$$
+Exponentiation is a monotonically increasing function, so the following inequality holds
+$$\pi_ke^{(x\frac{\mu_k}{\sigma^2}-\frac{\mu_k}{2\sigma^2})} \geq \pi_ie^{(x\frac{\mu_i}{\sigma^2}-\frac{\mu_i}{2\sigma^2})}$$
+Multiple this by $C$ 
+$$C=\frac{\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{x^2}}}{\sum_{l=1}^{k}\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}}$$
+Then it gives the following equation
+
+$$\frac{\pi_k\frac{1}{\sqrt(2\pi\sigma)}e^{(x\frac{\mu_k}{\sigma^2}-\frac{\mu_k}{2\sigma^2}
+-\frac{1}{2\sigma^2}x^2)}}
+{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}} \geq \frac{\pi_i\frac{1}{\sqrt(2\pi\sigma)}e^{(x\frac{\mu_i}{\sigma^2}-\frac{\mu_i}{2\sigma^2}
+-\frac{1}{2\sigma^2}x^2)}}
+{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}} $$
+
+
+
+
+
+
+which equals to 
+
+$$\frac{\pi_k\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_k)^2}}}
+{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{\frac{-1}{2\sigma^2}{(x-\mu_l)^2}}} \geq \frac{\pi_i\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_i)^2}}}
+{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}} $$
+
+So maxmizing $\delta_k(x)$ is equivalent to maximizing $p_k(x)$
+
+
+##3
+We are not assuming that the variance is not equal
+$$f_k(x)=\frac{\pi_k\frac{1}{\sqrt(2\pi\sigma_k)}e^{-\frac{1}{2\sigma_k^2}{(x-\mu_k)^2}}}{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma_l)}e^{-\frac{1}{2\sigma_l^2}{(x-\mu_l)^2}}}$$
+
+$$\log(f_k(x))=\frac{\log\pi_k+\log\frac{1}{\sqrt{2\pi\sigma_k}}-\frac{1}{2\sigma_k^2}(x-\mu_k)^2}{
+\log{(\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma_l)}e^{-\frac{1}{2\sigma_l^2}{(x-\mu_l)^2}}})}$$
+
+
+
+
+
+
+
+$$\log(f_k(x))\log{(\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma_l)}e^{-\frac{1}{2\sigma_l^2}{(x-\mu_l)^2}}})=\delta_p(x)=\log\pi_k+\log\frac{1}{\sqrt{2\pi\sigma_k}}-\frac{1}{2\sigma_k^2}(x-\mu_k)^2$$
+
+
+As we can see the $\delta_p(x)$ was  quadratic function of x.
+
+###4
+####a
+On average 10% of the abailable observations will we use to make the prediction
+
+####b
+1% of the avaiable observations will be used to make the prediction
+
+####c
+$0.10^{100} * 100 = 10^{-98}$%.
+
+####d
+As $p$ increase linear, observations that are geometrically near decrease exponentially
+
+####e
+p=1, 
+l=sqrt{0.1},
+
+p=2,
+l=0.1^{1/3},
+p = N, 
+l = 0.10^{1/N}
+
+
+##5
+### a
+If the Bayes decision boundary is linear, we expect QDA to perform better on the training set because it's higher flexibility will yield a closer fit one the test set, we expect LDA to perform better than QDA because QDA could overfit the linerity of the Bayes decision boundary
+
+###b
+If the Bayes decision boundary is non-linear. QDA perform better both on the training and test sets
+
+###c
+We expect the test prediction accuracy of QDA relative to LDA to improve in general, as the sample size n increases because a more 
+flexible method will yield a better fit as more samples can be fit and variance is offset by the larger sample sizes
+
+###d
+False, with fewer sample points, the variance from using a more flexible method, such as QDA, would lead to overfit, yielding a higher test rate than LDA
+
+##6
+###a
+$$p(x)=\frac{e^{\beta_0+\beta_1x_1+\beta_2x_2}}{1+e^{\beta_0+\beta_1x_1+\beta_2x_2}}$$
+$x_1=40$ and $x_2=35$
+$p_(x)=37$%
+
+###b
+$x=50$
+
+## 7 
+
+$$f_k(x)=\frac{\pi_k\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_k)^2}}}{\sum_{l=1}^{k}\pi_l\frac{1}{\sqrt(2\pi\sigma)}e^{-\frac{1}{2\sigma^2}{(x-\mu_l)^2}}}=
+\frac{\pi_1e^{-\frac{1}{2\sigma^2}{(x-\mu_1)^2}}}{\pi_1e^{-\frac{1}{2\sigma^2}{(x-\mu_1)^2}}+
+\pi_0e^{-\frac{1}{2\sigma^2}{(x-\mu_0)^2}}}$$
+$$=\frac{0.8\exp(-\frac{1}{2*36}(4-10)^2)}{0.8\exp(-\frac{1}{2*36}(4-10)^2)+0.2\exp(-\frac{1}{2*36}4^2)}=75.2\%$$
+
+##8
+For knn=1, the training error rate is 0%. Because for any training observations, its nearest neighbor will be response itself. So KNN has a test error rate of 36%. The logistical regression has lower test error rate of 30%
+
+##9
+###a
+$$\frac{p_(x)}{1-p_(x)}=0.37$$ 
+$$1.37p_(x)=0.37$$ 
+$$p_(x)=0.27$$
+
+
+###b
+$$\frac{p_(x)}{1-p_(x)}=\frac{0.16}{1-0.16}=0.19$$
+
+##10
+###e
+```{r,echo=F,warning=F}
+library(ISLR)
+library(MASS)
+library(xtable)
+library(knitr)
+library(class)
+library(svd)
+train<-(Weekly$Year<2009)
+weekly.0910<-Weekly[!train,]
+lda.train<-lda(Direction~Lag2,data=Weekly,subset=train)
+#predict the 0910 datasets using the prediction fit from glm.fit
+lda.prob2<-predict(lda.train,weekly.0910)
+#lda.prob2 has three variables, like class, posterior and x, the class variable gives the classification 
+#of up or down for the direction
+lda.class<-lda.prob2$class
+table<-table(lda.class,weekly.0910$Direction)
+e<-mean(lda.class==weekly.0910$Direction)
+```
+
+The confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+
+The overall fraction of correct predictions for the held out data is  `r e` 
+
+###f
+```{r,echo=F,warning=F}
+weekly.train<-Weekly[train,]
+qda.train<-qda(Direction~Lag2,data=Weekly,subset=train)
+qda.class<-predict(qda.train,weekly.0910)$class
+table<-table(qda.class,weekly.0910$Direction)
+e<-mean(qda.class==weekly.0910$Direction)
+```
+
+The confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+
+###g
+```{r,echo=F,warning=F}
+library(class)
+weekly.train <-with(Weekly,as.matrix(Lag2[train]))
+weekly.test<-with(Weekly,as.matrix(Lag2[!train]))
+train.Direction <- with(Weekly,Direction[train])
+set.seed(1)
+knn.pred<-knn(weekly.train,weekly.test,train.Direction,k=1)
+Direction.0910 <- with(Weekly,Direction[!train])
+table<-table(knn.pred,Direction.0910)
+e<-mean(knn.pred==Direction.0910)
+```
+
+The confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+
+
+###h 
+Logistic regression and LDA methods provide similar test error rates.
+
+
+###i 
+```{r,echo=F,warning=F}
+glm.fit4<-glm(Direction~Lag1:Lag2,data=Weekly,family=binomial,subset=train)
+glm.prob<-predict(glm.fit4,weekly.0910,type="response")
+glm.pred<-rep("Down",length(glm.prob))
+#transform
+glm.pred[glm.prob>0.5]="Up"
+table<-table(glm.pred,weekly.0910$Direction)
+e<-mean(glm.pred==weekly.0910$Direction)
+```
+
+The overall fraction of correct predictions for the held out data is  `r e` 
+Using logistic regression with interaction term,the confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+
+
+####i-e 
+```{r,echo=F,warning=F}
+lda.train<-lda(Direction~Lag1:Lag2,data=Weekly,subset=train)
+#predict the 0910 datasets using the prediction fit from glm.fit
+lda.prob2<-predict(lda.train,weekly.0910)
+#lda.prob2 has three variables, like class, posterior and x, the class variable gives the classification 
+#of up or down for the direction
+lda.class<-lda.prob2$class
+table<-table(lda.class,weekly.0910$Direction)
+#gives us the test error rate by using 1-the mean value
+e<-mean(lda.class==weekly.0910$Direction)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+Using linear Discriminant Analysis with interaction term,the confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+
+####i-f
+```{r,echo=F,warning=F}
+qda.train<-qda(Direction~sqrt(abs(Lag2))+Lag2,data=Weekly,subset=train)
+qda.class<-predict(qda.train,weekly.0910)$class
+table<-table(qda.class,weekly.0910$Direction)
+e<-mean(qda.class==weekly.0910$Direction)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+Using QDA  with interaction term,the confusion table is below
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+
+
+####i-g
+```{r,echo=F,warning=F}
+knn.pred=knn(weekly.train,weekly.test,train.Direction,k=10)
+table<-table(knn.pred,Direction.0910)
+e<-mean(knn.pred==Direction.0910)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+Using k-nearest neighbor with k=10,the confusion table is below
+
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(table), type = "latex", comment = FALSE)
+```
+
+####i-g
+```{r,echo=F,warning=F}
+knn.pred<-knn(weekly.train,weekly.test,train.Direction,k=100)
+t<-table(knn.pred,Direction.0910)
+e<-mean(knn.pred==Direction.0910)
+```
+The overall fraction of correct predictions for the held out data is  `r e` 
+Using k-nearest neighbor with k=100,the confusion table is below
+
+```{r, echo=FALSE, results='asis',warning=F}
+print(xtable(t), type = "latex", comment = FALSE)
+```
+
+The original LDA and logistic regression have better performance in terms of test error rate.
+
+##11
+###a
+```{r,echo=F,warning=F}
+#create a binary variable, mpg01, that contains a 1 if mpg contais a value above its median, and a 1 if mpg 
+#contains a value below its median. 
+library(ISLR)
+mpg01<-rep(0,length(Auto$mpg))
+mpg01[Auto$mpg>median(Auto$mpg)]=1
+Auto<-data.frame(mpg01,Auto)
+```
+
+###b
+```{r,echo=F,warning=F}
+cor(Auto[,-10])
+
+```
+###c
+```{r,echo=F,warning=F}
+with(Auto,plot(cylinders, mpg01))
+with(Auto,boxplot(cylinders, mpg01))
+
+with(Auto,plot(displacement, mpg01))
+with(Auto,boxplot(displacement, mpg01))
+
+with(Auto,plot(horsepower, mpg01))
+with(Auto,boxplot(horsepower, mpg01))
+
+with(Auto,plot(year, mpg01))
+with(Auto,boxplot(year, mpg01))
+
+with(Auto,plot(acceleration, mpg01))
+with(Auto,boxplot(acceleration, mpg01))
+
+with(Auto,plot(origin, mpg01))
+with(Auto,boxplot(origin,mpg01))
+```
+From the boxplot, we can see that the cylinders, displacement, weight,horsepower are related
+accelaration, year and origin their R square is too small. 
+
+###c
+Split the data into training data and test dataset, use even or odd year as the separation for training and testing data set.subset the row and the column, that the rows where train is true, and all the columns
+```{r,echo=F,warning=F}
+train<-(Auto$year%%2==0)
+Auto.train=Auto[train,]
+Auto.test=Auto[!train,]
+```
+
+###d
+Perform LDA on the training data set in order to predict mpg01
+```{r,echo=F,warning=F}
+lda.auto<-lda(mpg01~cylinders+displacement+horsepower+weight,data=Auto,subset=train)
+lda.pred<-predict(lda.auto,Auto.test)         
+lda.class<-lda.pred$class
+table(lda.class,Auto.test$mpg01)
+#gives us the test error rate by using 1-the mean value
+c<-mean(lda.class==Auto.test$mpg01)
+#test error is 1-0.8736=0.1263
+e<-mean(lda.class!=Auto.test$mpg01)
+```
+The test error is `r e` using LDA analysis
+
+###e
+Perform QDA on the training data in order to predict mpg01
+```{r,echo=F,warning=F}
+qda.train<-qda(mpg01~cylinders+displacement+horsepower+weight,data=Auto,subset=train)
+qda.class<-predict(qda.train,Auto.test)$class
+table(qda.class,Auto.test$mpg01)
+mean(qda.class==Auto.test$mpg01)
+#test error is
+e<-mean(qda.class!=Auto.test$mpg01)#0.1318681
+```
+The test error is `r e ` using QDA analysis
+
+ 
+###f
+Perform logistic regression 
+```{r,echo=F,warning=F}
+glm.auto<-glm(mpg01~cylinders+displacement+horsepower+weight,data=Auto,subset=train,family = binomial)
+glm.pred<-predict(glm.auto,Auto.test,type="response")
+glm.prob<-rep("0",length(glm.pred))
+#transform
+glm.prob[glm.pred>0.5]=1
+table(glm.prob,Auto.test$mpg01)
+mean(glm.prob==Auto.test$mpg01)
+#test error
+e<-mean(glm.prob!=Auto.test$mpg01)#0.1208791
+```
+The test error is `r e ` using logistic regression analysis
+
+###g 
+Perform KNN on the training data
+```{r,echo=F,warning=F}
+library(class)
+knn.train=cbind(Auto$cylinders,Auto$displacement,Auto$horsepower,Auto$weight)[train,]
+knn.test=cbind(Auto$cylinders,Auto$displacement,Auto$horsepower,Auto$weight)[!train,]
+train.mpg01=mpg01[train]
+```
+
+####k=1
+```{r,echo=F,warning=F}
+set.seed(1)
+knn.pred=knn(knn.train,knn.test,train.mpg01,k=1)
+table(knn.pred,Auto.test$mpg01)
+e1<-mean(knn.pred!=Auto.test$mpg01)#0.1538462
+```
+
+####k=10
+```{r,echo=F,warning=F}
+set.seed(1)
+knn.pred=knn(knn.train,knn.test,train.mpg01,k=10)
+table(knn.pred,Auto.test$mpg01)
+e10<-mean(knn.pred!=Auto.test$mpg01)#0.1538462
+```
+
+####k=10
+```{r,echo=F,warning=F}
+set.seed(1)
+knn.pred=knn(knn.train,knn.test,train.mpg01,k=100)
+table(knn.pred,Auto.test$mpg01)
+e100<-mean(knn.pred!=Auto.test$mpg01)#0.1428571
+```
+k=1, test error rate is `r e1`. k=10, test error rate is `r e10`. k=100, test error rate is `r e100`.K=100 seems to perform the best. 
+
+
+##12
+###a
+write a functio, that prints out the result of raising 2 to the 3rd power.
+```{r,echo=F,warning=F}
+Power <- function(x){
+  result=x^3
+  return(result)
+}
+x=Power(2)
+```
+#b 
+create a new function, Power2(), that allows you to pass any two numbers, x and a, and prints out
+the value of X^a
+```{r,echo=F,warning=F}
+Power2=function(x,a){
+  x^a
+  return
+}
+
+Power2(3,8)
+Power2(10,3)
+Power2(8,17)
+Power2(131,3)
+```
+
+###c
+create power3 
+```{r,echo=F,warning=F}
+Power3=function(x,a){
+  result=x^a
+  return(result)
+}
+```
+
+###e
+x=1:10
+consider displaying either the x-axis, the y-axis or both on the log-scale you can do this by suing log="x", log="y", log="xy"
+```{r,echo=F,warning=F}
+plot(x, Power3(x, 2), log = "xy", ylab = "Log of y = x^2", xlab = "Log of x", 
+     main = "Log of x^2 versus Log of x")
+```
+
+###f
+```{r,echo=F,warning=F}
+PlotPower=function(x,a){
+  plot(x,Power3(x,a))
+}
+PlotPower(1:10,3)
+```
+
+##13
+```{r,echo=F,warning=F}
+library(MASS)
+crim01<-rep(0,length(Boston$crim))
+crim01[Boston$crim>median(Boston$crim)]=1
+Boston<-data.frame(crim01,Boston)
+#making 50% training dataset and 50% test dataset
+train<-1:(dim(Boston)[1]/2)
+test<-(dim(Boston)[1]/2+1):dim(Boston)[1]
+Boston.train<-Boston[train,]
+Boston.test<-Boston[test,]
+```
+
+####a logistic regression
+```{r,echo=F,warning=F}
+glm.Boston<-glm(crim01~.-crim,data=Boston.train,family = binomial)
+glm.pred<-predict(glm.Boston,Boston.test,type="response")
+glm.prob<-rep(0,length(glm.pred))
+glm.prob[glm.pred>0.5]=1
+crim01.test<-crim01[test]
+t<-table(glm.prob,crim01.test)
+c<-mean(glm.prob==crim01.test)
+#test error is about 18%
+a<-mean(glm.prob!=crim01.test)
+```
+If we use all the variable but crim, we will get a model which test error is `r a`
+
+
+```{r,echo=F,warning=F}
+glm.Boston<-glm(crim01~.-crim-ptratio-rm-medv-zn,data=Boston.train,family = binomial)
+glm.pred<-predict(glm.Boston,Boston.test,type="response")
+glm.prob<-rep(0,length(glm.pred))
+glm.prob[glm.pred>0.5]=1
+crim01.test<-crim01[test]
+t<-table(glm.prob,crim01.test)
+c<-mean(glm.prob==crim01.test)
+#test error
+a<-mean(glm.prob!=crim01.test)
+```
+we fit a more robust model, using the variable exclude crim, patratio,rm,medv,zn, then the test error is about `r a`
+
+Linear Discriminant regression 
+
+```{r,echo=F,warning=F}
+#LDA
+lda.Boston<-lda(crim01~.-crim,data=Boston.train)
+lda.pred<-predict(lda.Boston,Boston.test)         
+lda.class<-lda.pred$class
+t<-table(lda.class,Boston.test$crim01)
+#gives us the test error rate by using 1-the mean value
+c<-mean(lda.class==Boston.test$crim01)
+a<-mean(lda.class!=Boston.test$crim01)
+#test error 0.1343874
+```
+If we use all the variable but crim, we will get a model which test error is `r a`
+
+
+```{r,echo=F,warning=F}
+lda.Boston=lda(crim01~.--crim -crim01-ptratio-rm-medv-zn,data=Boston.train)
+lda.pred=predict(lda.Boston,Boston.test)         
+lda.class=lda.pred$class
+t<-table(lda.class,Boston.test$crim01)
+#gives us the test error rate by using 1-the mean value
+c<-mean(lda.class==Boston.test$crim01)
+a<-mean(lda.class!=Boston.test$crim01)
+#test error  0.1027668
+```
+we fit a more robust model, using the variable exclude crim, patratio,rm,medv,zn, then the test error is about `r a`
+
+QDA
+```{r,echo=F,warning=F}
+qda.train<-qda(crim01~.-crim,data=Boston.train)
+qda.class<-predict(qda.train,Boston.test)$class
+t<-table(qda.class,Boston.test$crim01)
+c<-mean(qda.class==Boston.test$crim01)
+#test error is
+a<-mean(qda.class!=Boston.test$crim01)#0.6521739
+```
+If we use all the variable but crim, we will get a model which test error is `r a`
+
+
+KNN 
+perform KNN on the training data
+```{r,echo=F,waring=F}
+library(class)
+train<-1:(dim(Boston)[1]/2)
+test<-(dim(Boston)[1]/2+1):dim(Boston)[1]
+knn.train.Boston<-with(Boston,cbind(zn,indus,chas,nox,rm,age,dis,rad,ptratio,black,lstat,medv)[train,])
+knn.test.Boston<-with(Boston,cbind(zn,indus,chas,nox,rm,age,dis,rad,ptratio,black,lstat,medv)[test,])
+train.crim01<-crim01[train]
+#k=1
+set.seed(1)
+knn.pred=knn(knn.train.Boston,knn.test.Boston,train.crim01,k=1)
+t<-table(knn.pred,Boston.test$crim01)
+a<-mean(knn.pred!=Boston.test$crim01)#0.3596838
+```
+With k=1 the test error is `r a`
+```{r,echo=F,warning=F}
+#k=10
+set.seed(1)
+knn.pred=knn(knn.train.Boston,knn.test.Boston,train.crim01,k=10)
+t<-table(knn.pred,Boston.test$crim01)
+a<-mean(knn.pred!=Boston.test$crim01)#0.2134387
+
+```
+With k=10 the test error is `r a`
+
+```{r,echo=F,warning=F}
+#k=100
+set.seed(1)
+knn.pred=knn(knn.train.Boston,knn.test.Boston,train.crim01,k=100)
+t<-table(knn.pred,Boston.test$crim01)
+a<-mean(knn.pred!=Boston.test$crim01)#the test error rate 0.3517787
+
+```
+With k=100 the test error is `r a`
+
+
+
+
+
+
+
+
+
