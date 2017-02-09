@@ -284,10 +284,10 @@ The original LDA and logistic regression have better performance in terms of tes
 #contains a value below its median. 
 library(ISLR)
 mpg01<-rep(0,length(Auto$mpg))
-Auto$mpg01[Auto$mpg>median(Auto$mpg)]=1
+mpg01[Auto$mpg>median(Auto$mpg)]=1
 Auto<-data.frame(mpg01,Auto)
-
 ```
+
 ###b
 ```{r,echo=F,warning=F}
 cor(Auto[,-10])
@@ -327,12 +327,6 @@ Auto.test=Auto[!train,]
 ###d
 Perform LDA on the training data set in order to predict mpg01
 ```{r,echo=F,warning=F}
-library(ISLR)
-library(MASS)
-library(xtable)
-library(knitr)
-library(class)
-library(svd)
 lda.auto<-lda(mpg01~cylinders+displacement+horsepower+weight,data=Auto,subset=train)
 lda.pred<-predict(lda.auto,Auto.test)         
 lda.class<-lda.pred$class
@@ -345,7 +339,6 @@ e<-mean(lda.class!=Auto.test$mpg01)
 The test error is `r e` using LDA analysis
 
 ###e
-```{r}
 Perform QDA on the training data in order to predict mpg01
 ```{r,echo=F,warning=F}
 qda.train<-qda(mpg01~cylinders+displacement+horsepower+weight,data=Auto,subset=train)
@@ -377,9 +370,9 @@ The test error is `r e ` using logistic regression analysis
 Perform KNN on the training data
 ```{r,echo=F,warning=F}
 library(class)
-knn.train=cbind(cylinders,displacement,horsepower,weight)[train,]
-knn.test=cbind(cylinders,displacement,horsepower,weight)[!train,]
-train.mpg01=mpg01[train]
+knn.train<-cbind(cylinders,displacement,horsepower,weight)[train,]
+knn.test<-cbind(cylinders,displacement,horsepower,weight)[!train,]
+train.mpg01<-mpg01[train]
 train.mpg01
 
 #k=1
@@ -569,6 +562,7 @@ a<-mean(knn.pred!=Boston.test$crim01)#the test error rate 0.3517787
 
 ```
 With k=100 the test error is `r a`
+
 
 
 
