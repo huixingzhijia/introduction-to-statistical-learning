@@ -1,0 +1,327 @@
+#2 
+#g
+a=function(n){
+  return (1-(1-1/n)^n)
+}
+x=1:100000
+plot(x,a(x))
+#The plot quickly reaches an asymptote of about 63.2%.
+
+#h bootstrap sampe size is 100, contains the jth observation. j=4.
+store=rep(NA,10000)
+for (i in 1:10000){
+  store[i]=sum(sample(1:100,rep=TRUE)==4)>0
+}
+mean(store)
+
+library(ISLR)
+names(Default)
+glm.fit=glm(default~income+balance,family = binomial,data=Default)
+summary(glm.fit)
+
+summary(Default)
+#split the data into training and validation data set using the sample() function
+default=function() {
+train = sample(dim(Default)[1], dim(Default)[1]/2)
+#fit a multiple losgistic regressiong using only the train data
+glm.fit.train=glm(default~income+balance,family = binomial,data=Default, subset=train)
+#
+glm.pred=rep("No",dim(Default)[1]/2)
+glm.prob=predict(glm.fit.train,Default[-train,],type="response")
+glm.pred[glm.prob>0.5]="Yes"
+table(glm.pred,Default[-train,]$default)
+mean(glm.pred!=Default[-train,]$default)
+}
+#repreat the process in b with three times, because it has sample function, just run three times
+default()
+
+#d
+  train = sample(dim(Default)[1], dim(Default)[1]/2)
+  #fit a multiple losgistic regressiong using only the train data
+  glm.fit.train=glm(default~income+balance+student,family = binomial,data=Default, subset=train)
+  #
+  glm.pred=rep("No",dim(Default)[1]/2)
+  glm.prob=predict(glm.fit.train,Default[-train,],type="response")
+  glm.pred[glm.prob>0.5]="Yes"
+  table(glm.pred,Default[-train,]$default)
+  mean(glm.pred!=Default[-train,]$default)
+
+#test error rate, with student dummy variable. Using the validation set approach, it doesn't appear 
+  #adding the student dummy variable leads to a reduction in the test error rate.
+
+#6
+library(ISLR)
+glm.fit=glm(default~income+balance,data=Default,family=binomial)
+summary(glm.fit)
+coef(glm.fit)
+#the standard error of the intercept, income, balance are 4.348e-01,4.985e-06,2.274e-04 
+
+#b 
+boot.fn=function(data,index){
+   return(coef(glm(default~income+balance,data=data,family = binomial,subset=index)))
+}
+summary(Default)
+#c
+library(boot)
+boot(Default,boot.fn,50)
+#the boot function is the same as 
+set.seed(1)
+#the following boot() and boot.fn do the same things
+dim(Default[1])
+boot(Default,boot.fn,50)
+boot.fn(Default,sample(dim(Default)[1]/2,50))
+
+#7
+#a
+summary(Weekly)
+glm.fit=glm(Direction~Lag1+Lag2,data=Weekly,family=binomial)
+summary(glm.fit)
+
+#b fit the logistic regression using all but the first obs
+glm.fit.1=glm(Direction~Lag1+Lag2,data=Weekly[-1,],family = binomial)
+
+#c
+predict(glm.fit, Weekly[1, ], type = "response") > 0.5
+#or 
+predict.glm(glm.fit, Weekly[1, ], type = "response") > 0.5
+
+#it was predicted as going up, however the rist one is going down. It was classfied wrong
+
+#d
+count = rep(0, dim(Weekly)[1])
+for (i in 1:(dim(Weekly)[1])){
+  glm.fit.loop=glm(Direction~Lag1+Lag2,data=Weekly[-i,],family = binomial)
+  up=predict.glm(glm.fit.loop,Weekly[i,],type="response")>0.5
+  true.up=Weekly[i,]$Direction=="Up"
+  if (up!=true.up) 
+    count[i]=1
+  
+}
+
+sum(count)
+
+#490 errors.
+
+#e
+mean(count)
+#LOOCV estimates a test error rate of 45%.
+
+#8
+set.seed(1)
+y=rnorm(100)
+x=rnorm(100)
+y=x-2*x^2+rnorm(100)
+
+
+#b
+plot(x,y)
+#Quadratic plot. XX from about -2 to 2. YY from about -8 to 2.
+
+#c
+#i
+data=data.frame(x,y)
+glm.fit=glm(y~x,data=data)
+
+#
+library(boot)
+#cv.glm This function calculates the estimated K-fold cross-validation prediction error for generalized 
+#linear models.(have to be glm model otherwise it may fail) It is part of the boot library
+set.seed(1)
+cv.err=cv.glm(data,glm.fit)
+cv.err$delta
+#LOOCV error 5.890979 5.888812
+
+#ii
+glm.fit2=glm(y~poly(x,2),data=data)
+set.seed(1)
+cv.err1=cv.glm(data,glm.fit2)
+cv.err1$delta
+#LOOCV error is 1.086596 1.086326
+
+#iii
+glm.fit3=glm(y~poly(x,3),data=data)
+set.seed(1)
+cv.err2=cv.glm(data,glm.fit3)
+cv.err2$delta
+#LOOCv error is  1.102585 1.102227
+
+#iv
+glm.fit4=glm(y~x+poly(x,4))
+set.seed(1)
+cv.err3=cv.glm(data,glm.fit4)
+cv.err3$delta
+#1.114772 1.114334
+
+
+#d
+#i
+set.seed(3)
+cv.err=cv.glm(data,glm.fit)
+cv.err$delta
+#LOOCV error 5.890979 5.888812
+
+#ii
+glm.fit2=glm(y~poly(x,2),data=data)
+set.seed(3)
+cv.err1=cv.glm(data,glm.fit2)
+cv.err1$delta
+#LOOCV error is 1.086596 1.086326
+
+#iii
+glm.fit3=glm(y~poly(x,3),data=data)
+set.seed(3)
+cv.err2=cv.glm(data,glm.fit3)
+cv.err2$delta
+#LOOCv error is  1.102585 1.102227
+
+#iv
+glm.fit4=glm(y~x+poly(x,4))
+set.seed(3)
+cv.err3=cv.glm(data,glm.fit4)
+cv.err3$delta
+#1.114772 1.114334
+
+#Exact same, because LOOCV will be the same since it evaluates n folds of a single observation.
+
+
+#e
+#The quadratic polynomial had the lowest LOOCV test error rate.so the quadratic will give the best fit 
+#This was expected because it matches the true form of YY.
+
+
+#f
+summary(glm.fit4)
+#p-values show statistical significance of linear and quadratic terms, which agrees with the CV results.
+
+
+
+9
+#a
+library(MASS)
+summary(Boston)
+attach(Boston)
+medv.mean = mean(medv)
+medv.mean
+#22.53281
+
+#b
+attach(Boston)
+std.err=sd(medv)/sqrt(length(medv))
+std.err
+
+#c estimate the standard using bootstrap
+boot.fn=function(data,index){
+  return(mean(data[index]))
+}
+
+library(boot)
+medv.err=boot(medv,boot.fn,1000)
+medv.err
+# 0.4114581 similar to answer from (b) up to two significant digits. (0.4119 vs 0.4089)
+
+
+#d
+t.test(Boston$medv)
+#confidence interval (21.72953 23.33608)
+cv.up=22.53281+2*0.4119
+cv.low=22.53281-2*0.4119
+cv.up
+#CI (21.70901,23.35661)
+#Bootstrap estimate only 0.02 away for t.test estimate.
+
+
+#e
+median.med=median(medv)
+median.med#21.2
+
+#f
+boot.fn=function(data,index){
+  return(median(data[index]))
+}
+
+library(boot)
+medv.med=boot(medv,boot.fn,1000)
+medv.med
+# 0.3849425 Median of 21.2 with SE of 0.380. Small standard error relative to median value.
+
+#g
+medv.tenth = quantile(medv, c(0.1))
+medv.tenth
+
+medv.tenth = quantile(medv, probs=0.1)
+medv.tenth
+
+#quantile(x, probs = n) x is the numeric vector whose sample quantiles are wanted, or an object of 
+#a class for which a method has been defined
+#numeric vector of probabilities with values in [0,1]
+
+
+#h
+set.seed(1)
+boot.fn=function(data,index){
+  return(quantile(data[index],0.1))
+}
+
+boot(medv, boot.fn, 1000)
+
+#Tenth-percentile of 12.75 with SE of 0.511. Small standard error relative to tenth-percentile value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
