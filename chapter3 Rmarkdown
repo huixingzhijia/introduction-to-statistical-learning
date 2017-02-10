@@ -456,6 +456,121 @@ plot(predict(lm.fit3), rstudent(lm.fit3))
 ```
 Looking at the studentized residuals, we don't observe points too far from the |3| value cutoff, except for the second linear regression: y ~ x1.
 
+Special Notes:
+Residual Standard Errors is considered a measure of the lack of fit of the model 
+R square is the proportion of variance explained. the proportion of variability in Y that can be explained using x, by regresion.
+
+Remove the high leverage observation has a much more substantial impact on least square line than removing the outlier 
+
+RSE esimates the standard deivation of the response from the population regression. For the advertising, the RSE is 16 unitis while the mean value is 14, indicating a percentage error is 12%
+
+##15
+
+###a
+```{r,echo=F,warning=F}
+library(MASS)
+summary(Boston)
+Boston$chas <- factor(Boston$chas, labels = c("N","Y"))
+summary(Boston)
+lm.zn = lm(crim~zn,data=Boston)
+summary(lm.zn) # yes
+lm.indus = lm(crim~indus,data=Boston)
+summary(lm.indus) # yes
+lm.chas = lm(crim~chas,data=Boston) 
+summary(lm.chas) # no
+lm.nox = lm(crim~nox,data=Boston)
+summary(lm.nox) # yes
+lm.rm = lm(crim~rm,data=Boston)
+summary(lm.rm) # yes
+lm.age = lm(crim~age,data=Boston)
+summary(lm.age) # yes
+lm.dis = lm(crim~dis,data=Boston)
+summary(lm.dis) # yes
+lm.rad = lm(crim~rad,data=Boston)
+summary(lm.rad) # yes
+lm.tax = lm(crim~tax,data=Boston)
+summary(lm.tax) # yes
+lm.ptratio = lm(crim~ptratio,data=Boston)
+summary(lm.ptratio) # yes
+lm.black = lm(crim~black,data=Boston)
+summary(lm.black) # yes
+lm.lstat = lm(crim~lstat,data=Boston)
+summary(lm.lstat) # yes
+lm.medv = lm(crim~medv,data=Boston)
+summary(lm.medv) # yes
+```
+
+###b
+```{r,echo=F,warning=F}
+lm.all = lm(crim~., data=Boston)
+summary(lm.all)
+```
+zn, dis, rad, black, medv we reject the null hypothesis
+
+###c
+Its coefficient in a simple linear regression model is shown on the x-axis, and its coefficient estimate in the multiple linear regression model is shown on the y-axis coefficients function is only used for extracting the estimate coefficient, nothing else if we use summary and coefficient variable, it can be used to extract all the paramters with row and columns if we are use the summary(object)$coefficient[n] with a single number, we need count the value from first row,first column to next
+
+```{r,echo=F,warning=F}
+coefficients(lm.zn)[2]
+#the followings are same
+coefficients(lm.zn)
+lm.zn$coefficients
+#the followings are same
+summary(lm.zn)$coefficients[5]
+summary(lm.zn)$coefficients[1,3]
+summary(lm.zn)$fstatistic[1]
+summary(lm.zn)$r.squared
+#once again, the coefficients are only used for 
+x = c(coefficients(lm.zn)[2],
+      coefficients(lm.indus)[2],
+      coefficients(lm.chas)[2],
+      coefficients(lm.nox)[2],
+      coefficients(lm.rm)[2],
+      coefficients(lm.age)[2],
+      coefficients(lm.dis)[2],
+      coefficients(lm.rad)[2],
+      coefficients(lm.tax)[2],
+      coefficients(lm.ptratio)[2],
+      coefficients(lm.black)[2],
+      coefficients(lm.lstat)[2],
+      coefficients(lm.medv)[2])
+y = coefficients(lm.all)[2:14]
+y
+plot(x, y)
+```
+Coefficient for nox is approximately -10 in univariate model and 31 in multiple regression model.
+
+###d 
+Is there evidence of non-linear association between any of the predictors and the response?
+```{r,echo=F,warning=F}
+lm.zn=lm(crim~poly(zn,3),data=Boston)
+summary(lm.zn) # 1, 2
+lm.indus = lm(crim~poly(indus,3),data=Boston)
+summary(lm.indus) # 1, 2, 3
+# lm.chas = lm(crim~poly(chas,3)) : qualitative predictor
+lm.nox = lm(crim~poly(nox,3),data=Boston)
+summary(lm.nox) # 1, 2, 3
+lm.rm = lm(crim~poly(rm,3),data=Boston)
+summary(lm.rm) # 1, 2
+lm.age = lm(crim~poly(age,3),data=Boston)
+summary(lm.age) # 1, 2, 3
+lm.dis = lm(crim~poly(dis,3),data=Boston)
+summary(lm.dis) # 1, 2, 3
+lm.rad = lm(crim~poly(rad,3),data=Boston)
+summary(lm.rad) # 1, 2
+lm.tax = lm(crim~poly(tax,3),data=Boston)
+summary(lm.tax) # 1, 2
+lm.ptratio = lm(crim~poly(ptratio,3),data=Boston)
+summary(lm.ptratio) # 1, 2, 3
+lm.black = lm(crim~poly(black,3),data=Boston)
+summary(lm.black) # 1
+lm.lstat = lm(crim~poly(lstat,3),data=Boston)
+summary(lm.lstat) # 1, 2
+lm.medv = lm(crim~poly(medv,3),data=Boston)
+summary(lm.medv) # 1, 2, 3
+```
+the answer is yes for most, except for black and chas.
+
 
 
 
