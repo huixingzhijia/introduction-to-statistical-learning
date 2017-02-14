@@ -16,18 +16,18 @@ mean(store)
 
 library(ISLR)
 names(Default)
-glm.fit=glm(default~income+balance,family = binomial,data=Default)
+glm.fit<-glm(default~income+balance,family = binomial,data=Default)
 summary(glm.fit)
 
 summary(Default)
 #split the data into training and validation data set using the sample() function
 default=function() {
-train = sample(dim(Default)[1], dim(Default)[1]/2)
+train <- sample(dim(Default)[1], dim(Default)[1]/2)
 #fit a multiple losgistic regressiong using only the train data
-glm.fit.train=glm(default~income+balance,family = binomial,data=Default, subset=train)
+glm.fit.train<-glm(default~income+balance,family = binomial,data=Default, subset=train)
 #
-glm.pred=rep("No",dim(Default)[1]/2)
-glm.prob=predict(glm.fit.train,Default[-train,],type="response")
+glm.pred<-rep("No",dim(Default)[1]/2)
+glm.prob<-predict(glm.fit.train,Default[-train,],type="response")
 glm.pred[glm.prob>0.5]="Yes"
 table(glm.pred,Default[-train,]$default)
 mean(glm.pred!=Default[-train,]$default)
@@ -36,12 +36,12 @@ mean(glm.pred!=Default[-train,]$default)
 default()
 
 #d
-  train = sample(dim(Default)[1], dim(Default)[1]/2)
+  train <- sample(dim(Default)[1], dim(Default)[1]/2)
   #fit a multiple losgistic regressiong using only the train data
-  glm.fit.train=glm(default~income+balance+student,family = binomial,data=Default, subset=train)
+  glm.fit.train<-glm(default~income+balance+student,family = binomial,data=Default, subset=train)
   #
-  glm.pred=rep("No",dim(Default)[1]/2)
-  glm.prob=predict(glm.fit.train,Default[-train,],type="response")
+  glm.pred<-ep("No",dim(Default)[1]/2)
+  glm.prob<-predict(glm.fit.train,Default[-train,],type="response")
   glm.pred[glm.prob>0.5]="Yes"
   table(glm.pred,Default[-train,]$default)
   mean(glm.pred!=Default[-train,]$default)
@@ -51,9 +51,9 @@ default()
 
 #6
 library(ISLR)
-glm.fit=glm(default~income+balance,data=Default,family=binomial)
-summary(glm.fit)
-coef(glm.fit)
+glm.default<-glm(default~income+balance,data=Default,family=binomial)
+summary(glm.default)
+a<-coef(glm.default)
 #the standard error of the intercept, income, balance are 4.348e-01,4.985e-06,2.274e-04 
 
 #b 
@@ -71,14 +71,17 @@ dim(Default[1])
 boot(Default,boot.fn,50)
 boot.fn(Default,sample(dim(Default)[1]/2,50))
 
+
+
+
 #7
 #a
 summary(Weekly)
-glm.fit=glm(Direction~Lag1+Lag2,data=Weekly,family=binomial)
+glm.fit<-glm(Direction~Lag1+Lag2,data=Weekly,family=binomial)
 summary(glm.fit)
 
 #b fit the logistic regression using all but the first obs
-glm.fit.1=glm(Direction~Lag1+Lag2,data=Weekly[-1,],family = binomial)
+glm.fit.1<-glm(Direction~Lag1+Lag2,data=Weekly[-1,],family = binomial)
 
 #c
 predict(glm.fit, Weekly[1, ], type = "response") > 0.5
@@ -88,7 +91,7 @@ predict.glm(glm.fit, Weekly[1, ], type = "response") > 0.5
 #it was predicted as going up, however the rist one is going down. It was classfied wrong
 
 #d
-count = rep(0, dim(Weekly)[1])
+count <- rep(0, dim(Weekly)[1])
 for (i in 1:(dim(Weekly)[1])){
   glm.fit.loop=glm(Direction~Lag1+Lag2,data=Weekly[-i,],family = binomial)
   up=predict.glm(glm.fit.loop,Weekly[i,],type="response")>0.5
@@ -119,8 +122,8 @@ plot(x,y)
 
 #c
 #i
-data=data.frame(x,y)
-glm.fit=glm(y~x,data=data)
+data<-data.frame(x,y)
+glm.fit<-glm(y~x,data=data)
 
 #
 library(boot)
@@ -132,23 +135,23 @@ cv.err$delta
 #LOOCV error 5.890979 5.888812
 
 #ii
-glm.fit2=glm(y~poly(x,2),data=data)
+glm.fit2<-glm(y~poly(x,2),data=data)
 set.seed(1)
-cv.err1=cv.glm(data,glm.fit2)
+cv.err1<-cv.glm(data,glm.fit2)
 cv.err1$delta
 #LOOCV error is 1.086596 1.086326
 
 #iii
-glm.fit3=glm(y~poly(x,3),data=data)
+glm.fit3<-glm(y~poly(x,3),data=data)
 set.seed(1)
-cv.err2=cv.glm(data,glm.fit3)
+cv.err2<-cv.glm(data,glm.fit3)
 cv.err2$delta
 #LOOCv error is  1.102585 1.102227
 
 #iv
-glm.fit4=glm(y~x+poly(x,4))
+glm.fit4<-glm(y~x+poly(x,4))
 set.seed(1)
-cv.err3=cv.glm(data,glm.fit4)
+cv.err3<-cv.glm(data,glm.fit4)
 cv.err3$delta
 #1.114772 1.114334
 
@@ -156,28 +159,28 @@ cv.err3$delta
 #d
 #i
 set.seed(3)
-cv.err=cv.glm(data,glm.fit)
+cv.err<-cv.glm(data,glm.fit)
 cv.err$delta
 #LOOCV error 5.890979 5.888812
 
 #ii
-glm.fit2=glm(y~poly(x,2),data=data)
+glm.fit2<-glm(y~poly(x,2),data=data)
 set.seed(3)
-cv.err1=cv.glm(data,glm.fit2)
+cv.err1<-cv.glm(data,glm.fit2)
 cv.err1$delta
 #LOOCV error is 1.086596 1.086326
 
 #iii
-glm.fit3=glm(y~poly(x,3),data=data)
+glm.fit3<-glm(y~poly(x,3),data=data)
 set.seed(3)
-cv.err2=cv.glm(data,glm.fit3)
+cv.err2<-cv.glm(data,glm.fit3)
 cv.err2$delta
 #LOOCv error is  1.102585 1.102227
 
 #iv
-glm.fit4=glm(y~x+poly(x,4))
+glm.fit4<-glm(y~x+poly(x,4))
 set.seed(3)
-cv.err3=cv.glm(data,glm.fit4)
+cv.err3<-cv.glm(data,glm.fit4)
 cv.err3$delta
 #1.114772 1.114334
 
@@ -199,14 +202,12 @@ summary(glm.fit4)
 #a
 library(MASS)
 summary(Boston)
-attach(Boston)
-medv.mean = mean(medv)
-medv.mean
+a<-mean(Boston$medv)
+a
 #22.53281
 
 #b
-attach(Boston)
-std.err=sd(medv)/sqrt(length(medv))
+std.err<-sd(Boston$medv)/sqrt(length(Boston$medv))
 std.err
 
 #c estimate the standard using bootstrap
@@ -215,7 +216,7 @@ boot.fn=function(data,index){
 }
 
 library(boot)
-medv.err=boot(medv,boot.fn,1000)
+medv.err<-boot(Boston$medv,boot.fn,1000)
 medv.err
 # 0.4114581 similar to answer from (b) up to two significant digits. (0.4119 vs 0.4089)
 
@@ -231,7 +232,7 @@ cv.up
 
 
 #e
-median.med=median(medv)
+median.med<-median(Boston$medv)
 median.med#21.2
 
 #f
@@ -240,15 +241,14 @@ boot.fn=function(data,index){
 }
 
 library(boot)
-medv.med=boot(medv,boot.fn,1000)
-medv.med
+medv.med<-boot(Boston$medv,boot.fn,1000)
 # 0.3849425 Median of 21.2 with SE of 0.380. Small standard error relative to median value.
 
 #g
-medv.tenth = quantile(medv, c(0.1))
+medv.tenth <- quantile(Boston$medv, c(0.1))
 medv.tenth
 
-medv.tenth = quantile(medv, probs=0.1)
+medv.tenth1<- quantile(Boston$medv, probs=0.1)
 medv.tenth
 
 #quantile(x, probs = n) x is the numeric vector whose sample quantiles are wanted, or an object of 
@@ -262,7 +262,7 @@ boot.fn=function(data,index){
   return(quantile(data[index],0.1))
 }
 
-boot(medv, boot.fn, 1000)
+boot(Boston$medv, boot.fn, 1000)
 
 #Tenth-percentile of 12.75 with SE of 0.511. Small standard error relative to tenth-percentile value.
 
