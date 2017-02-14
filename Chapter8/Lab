@@ -1,0 +1,188 @@
+#Decision Tree
+#fitting classification trees
+
+library(tree)
+library(ISLR)
+#use classification trees to analyze the Carseats data set, 
+attach(Carseats)
+#sales is a continuous variable, we begin by recoding it as a binary variable,using ifeles()
+#takes on a value of Yes if the sales variable exceeds 8 and takes on a value of No otherwise
+high=ifelse(Carseats$Sales<=8,"No","Yes")
+#fianlly, we use data.frame function to merge high with the rest of Carseats data
+Carseats=data.frame(Carseats,high)
+#we now use the tree() function to fit a classification tree in order to predict high using all variables but sales
+tree.carseats=tree(high~.-Sales,Carseats)
+summary(tree.carseats)
+fix(Carseats)
+names(Carseats)
+#remove variables Carseats$high.1<-NULL
+#remove variables Carseats$high.2<-NULL
+#remove variables Carseats$high.3<-NULL
+#remove variables Carseats$high.4<-NULL
+
+
+#n(mk) is the number of obs in the mth terminal node that belong to the kth class. the small deviance indicates a tree that
+#provides a good fit to the training data. the residual mean deviance reported is simply the deviance divided by n-|T0| 
+#400-27(node)=373
+plot(tree.carseats)
+#text to display the node labels the pretty=0 instructs R to include the category names for any qualitative predictors
+#rather than simply displaying a letter for each category.
+text(tree.carseats,pretty = 0)
+tree.carseats
+#if we just type the tree object, R prints output corresponding to each branch of the tree. R displays the split criterion(price<92.5)
+#the number of obs in that branck, the deviance, the overall preidiction for the branck(Yes or No), and the fraction of obs
+#in that branch  that take on values of Yes and No. 
+
+#solit the obs into a training set and a test set
+set.seed(2)
+train=sample(1:nrow(Carseats),200)
+Carseats.test=Carseats[-train,]
+high.test=high[-train]
+
+tree.carseats=tree(high~.-Sales,Carseats,subset = train)
+#type="calss" instructs R to return the actual class prediction.
+tree.pred=predict(tree.carseats,Carseats.test,type="class")
+table(tree.pred,high.test)
+#(85+57)/200=0.715 for the test error
+#whether pruning the tree might lead to improved the results
+#cv.tree performs cross-validation in order to determine the optimal level of tree complexity.
+#fun=prune.misclass indicate that we want the classification error rate to guide the cross-validation and pruning process
+#rather than the default for the cv.tree, which is deviance.
+#it reports the number of terminal nodes of each tree (size) as well as the correspinding error rate and the value
+#of the cost-complexity paratmer used (k, is alpha)
+
+set.seed(3)
+cv.carseats=cv.tree(tree.carseats,FUN = prune.misclass)
+names(cv.carseats)
+cv.carseats
+#the dev corresponds to the cross-validation error in this instance. The tree with 9 terminal nodes results in the lowest 
+#cross-validation error rate. 
+#we plot the error rate as a function of both size and k
+par(mfrow=c(1,2))
+plot(cv.carseats$size,cv.carseats$dev,type="b")
+plot(cv.carseats$k,cv.carseats$dev,type="b")
+
+#now apply the prune.misclass function in order to prune the tree to obtain the nie-node tree
+prune.carseats=prune.misclass(tree.carseats,best=9)
+par(mfrow=c(1,1))
+plot(prune.carseats)
+text(prune.carseats,pretty=0)
+
+tree.pred=predict(prune.carseats,Carseats.test,type="class")
+table(tree.pred,high.test)
+#(94+60)/200=0.77 77% of the test observation are correctly classified, so not only has the pruning process produced a more
+#interpretable tree, but it has also improved the classification accuracy.
+
+#if we increase the value of best, we obtain a larger pruned tree with lower classification accuracy
+prune.carseats=prune.misclass(tree.carseats,best=15)
+plot(prune.carseats)
+text(prune.carseats,pretty=0)
+tree.pred=predict(prune.carseats,Carseats.test,type="class")
+table(tree.pred,high.test)
+#(86+62)/200=0.74 74% of the test observation are correctly classified
+
+
+#Fitting Regression Trees
+#fit a regression tree to the Boston data, first create a training set, and fit the tree to the training data
+library(MASS)
+set.seed(1)
+train=sample(1:nrow(Boston),nrow(Boston)/2)
+tree.boston=tree(medv~.,Boston,subset=train)
+summary(tree.boston)
+#only three of the variables have been used in constructing the tree. 
+plot(tree.boston)
+text(tree.boston,pretty=0)
+#the tree predicts a median house price of 46400 for larger homes in suburbs in which residents have high socioecominc status(rm>=7.437 and lstat<9.715)
+
+#use the cv.tree function to see whether pruning the tree will improve the performance
+cv.boston=cv.tree(tree.boston)
+plot(cv.boston$size,cv.boston$dev,type="b")
+
+#if we wish to prune the tree, we could do the folllows, using prune.tree
+prune.boston=prune.tree(tree.boston,best=5)
+plot(prune.boston)
+text(prune.boston,pretty=0)
+
+#in keeping with the cross-validation results, we use the umpruned tree to make predictions on the test set
+yhat=predict(tree.boston,newdata=Boston[-train,])
+boston.test=Boston[-train,"medv"]
+plot(yhat,boston.test)
+abline(0,1)
+mean((yhat-boston.test)^2)
+#the test MSE associated with the regression tree is 25.0
+
+#bagging and random forest
+#bagging and random forest using the randomforest package in R
+#bagging is simply a special case of a random forest with m=p. the randomForest() function can be used to perform both 
+#random forests and bagging
+
+library(randomForest)
+set.seed(1)
+#mtry=13 indicates that all 13 predictors should be considered for each split of the tree. that bagging should be done
+bag.boston=randomForest(medv~.,data=Boston,subset=train,mtry=13,importance=T)
+bag.boston
+
+#how well does this bagged model perform on the test set
+yhat.bag=predict(bag.boston,newdata=Boston[-train,])
+plot(yhat.bag,boston.test)
+abline(0,1)
+mean((yhat.bag-boston.test)^2)
+#the test set MSE assocated with the bagged regression tree is 13.16
+#we could change the number of trees grown by randomForest using ntree argument
+bag.boston=randomForest(medv~.,data=Boston,subset = train,mtry=13,ntree=25)
+yhat.bag=predict(bag.boston,newdata=Boston[-train,])
+mean((yhat.bag-boston.test)^2)
+
+#growing a random forest proceeds in exactly the same way, except that we use a smaller value of the mtry argument,
+#randomForest uses p/3 variables when building a random forest of regression trees. and sqrt(p) variables when building a 
+#random forest of classification trees.
+set.seed(1)
+rf.boston=randomForest(medv~.,data=Boston,subset=train,mtry=6,importance=T)
+yhat.rf=predict(rf.boston,newdata=Boston[-train,])
+mean((yhat.rf-boston.test)^2)
+#the test set MSE is 11.31 , this indicates that random forests yielded an improvment over bagging in this case
+#the importance() function, we can view the importance of each variable
+importance(rf.boston)
+
+#in the case of regression trees, the node impurity is measured by the training RSS and for classification trees by the deviance.
+
+#plot of these importance measures can be produced using the varIMpPlot
+varImpPlot(rf.boston)
+#the results indicates that across all of the trees considered in the random forest, the wealth level of the community and the house size (rm)
+#are by far the two most important variables
+
+#Boosting, use the gbm function in gbm library. run gbm() with the option 
+library(gbm)
+#fit boosted regression trees to the Boston data set. We run gbm() with the option 
+#distribution="gaussin" since this is regression problem, if it were a binary classification problem,
+#we would use ditribution="bernoulli" The n.trees=5000 indicates that we want 5000 trees and the option 
+#interaction.depth=4 limits the depth of each tree
+set.seed(1)
+boost.boston=gbm(medv~.,data=Boston[train,],distribution="gaussian",n.trees = 5000,interaction.depth = 4)
+summary(boost.boston)
+#we see that lstat and rm are by far the most important variables, we can also produce partial dependence plots 
+#for these two variables. the plots illustrate the marginal effect of the selected variables on the response
+#after integrating out the other variables
+par(mfrow=c(1,2))
+plot(boost.boston,i="rm")
+plot(boost.boston,i="lstat")
+#the median house prices are increasing with rm and decreasing with lstat
+
+##use the boosted model to predict medv on the test set
+yhat.boost=predict(boost.boston,newdata=Boston[-train,],n.trees = 5000)
+mean((yhat.boost-boston.test)^2)
+#the test MSE is 11.8, similar to the test MSE for random forests and superior to that for bagging. 
+
+#we perform boosting with a different value of the shrinkage parameter lambda, the default is 0.001, but it easily modified to 0.2
+boost.boston=gbm(medv~.,data=Boston[train,],distribution="gaussian",n.trees=5000,interaction.depth = 4,shrinkage = 0.2,
+                 verbose=F)
+yhat.boost=predict(boost.boston,newdata=Boston[-train,],n.trees = 5000)
+mean((yhat.boost-boston.test)^2)
+#11.51109, using lambda=0.2 leads to a slightly lower test MSE than lambda=0.001
+
+
+
+
+
+
+
