@@ -22,6 +22,27 @@ data<-data.frame(x,y)
 bestsubset<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10)
 bs.summary<-summary(bestsubset)
 names(bs.summary)
+#create a function:
+plot.bestsummary <- function(reg.summary) {
+  par(mfrow = c(2, 2), mar = c(5, 5, 1, 1))
+  plot(reg.summary$rss, xlab = "Number of Variables", ylab = "RSS", type = "l")
+  plot(reg.summary$adjr2, xlab = "Number of Variables", 
+       ylab = expression(paste("Adjusted ", R^2)), type = "l")
+  points(which.max(reg.summary$adjr2), 
+         reg.summary$adjr2[which.max(reg.summary$adjr2)], 
+         col = "red", cex = 2, pch = 20)
+  plot(reg.summary$cp, xlab = "Number of Variables", ylab = expression(C[p]), 
+       type = "l")
+  points(which.min(reg.summary$cp), 
+         reg.summary$cp[which.min(reg.summary$cp)], 
+         col = "red", cex = 2, pch = 20)
+  plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
+  points(which.min(reg.summary$bic), 
+         reg.summary$bic[which.min(reg.summary$bic)], 
+         col = "red", cex = 2, pch = 20)
+}
+
+plot.bestsummary(bs.summary)
 
 #using adjusted-Rsquare
 plot(bs.summary$rss,xlab="Number of Variables",ylab="RSS",type="l")
@@ -45,6 +66,8 @@ points(3,bs.summary$bic[3],col="red",cex=2,pch=20)
 
 #So the 3 variable model will give the best model 
 coef(bestsubset,3)
+#the best three variables are x, x^2, and x^3
+
 
 
 #d use the method="forward"
@@ -52,46 +75,20 @@ regfit.fwd<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10,method="forward")
 fwd.summary<-summary(regfit.fwd)
 
 #foward adjust R square
-plot(fwd.summary$adjr2,xlab="Number of variables",ylab="Adjusted RSQ",type="l")
-which.max(fwd.summary$adjr2)
-points(4,fwd.summary$adjr2[4],col="red",cex=2,pch=20)
 
-#Using AIC method
-plot(fwd.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
-which.min(fwd.summary$cp)
-points(4,fwd.summary$cp[4],col="red",cex=2,pch=20)
-#number of variable is 4 gives the minimum AIC 
+plot.bestsummary(fwd.summary)
 
-#Using BIC method
-plot(fwd.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
-which.min(fwd.summary$bic)
-points(3,fwd.summary$bic[3],col="red",cex=2,pch=20)
-#number of variable is 3 gives the minimum BIC
-
-#So the 4 variable model will give the best model 
-coef(regfit.fwd,4)
+#So the 3 variable model will give the best model 
+coef(regfit.fwd,3)
 
 
 #backward
 regfit.bwd<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10,method="backward")
 bwd.summary<-summary(regfit.bwd)
 
-#backward adjust R square
-plot(bwd.summary$adjr2,xlab="Number of variables",ylab="Adjusted RSQ",type="l")
-which.max(bwd.summary$adjr2)
-points(4,bwd.summary$adjr2[4],col="red",cex=2,pch=20)
+#Making the plot
+plot.bestsummary(bwd.summary)
 
-#Using AIC method
-plot(bwd.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
-which.min(bwd.summary$cp)
-points(4,bwd.summary$cp[4],col="red",cex=2,pch=20)
-#number of variable is 4 gives the minimum AIC 
-
-#Using BIC method
-plot(bwd.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
-which.min(bwd.summary$bic)
-points(3,bwd.summary$bic[3],col="red",cex=2,pch=20)
-#number of variable is 3 gives the minimum BIC
 
 #So the 4 variable model will give the best model 
 coef(regfit.bwd,4)
@@ -274,50 +271,61 @@ barplot(c(lm.test.error, ridge.test.error, lasso.test.error, pcr.test.error, pls
 #The plot shows that PCR gives the higest test error, Lasso gives the lowest test error.OLS, and PLS are almost same
 #Expected PCR, there are not too much difference.
 
-#10
 #a
 set.seed(1)
-p = 20
-n = 1000
-x = matrix(rnorm(n * p), n, p)
-B = rnorm(p)
-B[3] = 0
-B[4] = 0
-B[9] = 0
-B[19] = 0
-B[10] = 0
-eps = rnorm(p)
-y = x %*% B + eps
+p <- 20
+n <- 1000
+x <- matrix(rnorm(n * p), n, p)
+B <- rnorm(p)
+B[3] <- 0
+B[4] <- 0
+B[9] <- 0
+B[19] <- 0
+B[10] <- 0
+eps <- rnorm(p)
+y <- x %*% B + eps
 
 #b
 train<-sample(seq(1000),100,replace = F)
-y.train=y[train,]
-y.test=y[-train,]
-x.train=x[train,]
-x.test=x[-train,]
 
-data<-data.frame(x=x.train,y=y.train)
+data<-data.frame(x=x,y=y)
+data.train<-data[train,]
+data.test<-data[-train,]
+y.train<-data$y[train]
+y.test<-data$y[-train]
 #c
-ref.fit.best<-regsubsets(y ~ . ,data=data,nvmax=p)
-x_cols = colnames(x, do.NULL=FALSE, prefix="x.")
-val.errors=rep(NA,p)
+
+# perform best subsets selection on training subset
+ref.fit.best <- regsubsets(y ~ ., data = data.train, nvmax = p)
+# now create model matrix (matrix of x variables) from test data
+test.mat <- model.matrix(y ~.,data = data.train)
+# create empty vector to hold Test MSE for each model
+val.errors <- rep(NA, p)
+# loop through each model (1:19), calculating validation error for each:
 for (i in 1:p){
-  coefi=coef(ref.fit.best,id=i)
-   pred = as.matrix(x.train[,x_cols %in% names(coefi)]) %*% coefi[names(coefi) %in% x_cols]
-  val.errors[i]=mean((y.train-pred)^2)
+  coefi <- coef(ref.fit.best, id = i)
+  pred <- test.mat[ , names(coefi)] %*% coefi
+  val.errors[i] <- mean((y.train-pred)^2)
 }
 
 plot(val.errors, ylab="Training MSE", pch=19, type="b")
 
-#d
+# Which of those has smallest testing error?
+which.min(val.errors)
+coef(ref.fit.best, 10)
 
-ref.fit.best<-regsubsets(y ~ . ,data=data,nvmax=p)
-x_cols = colnames(x, do.NULL=FALSE, prefix="x.")
-val.errors=rep(NA,p)
+#It seems like after 10 variable there is not too much change
+
+
+#d
+# create empty vector to hold Test MSE for each model
+val.errors <- rep(NA, p)
+test.mat <- model.matrix(y ~.,data = data.test)
+# loop through each model (1:20), calculating validation error for each:
 for (i in 1:p){
-  coefi=coef(ref.fit.best,id=i)
-  pred = as.matrix(x.test[,x_cols %in% names(coefi)]) %*% coefi[names(coefi) %in% x_cols]
-  val.errors[i]=mean((y.test-pred)^2)
+  coefi <- coef(ref.fit.best, id = i)
+  pred <- test.mat[ , names(coefi)] %*% coefi
+  val.errors[i] <- mean((y.test-pred)^2)
 }
 
 plot(val.errors, ylab="Testing MSE", pch=19, type="b")
@@ -325,13 +333,20 @@ plot(val.errors, ylab="Testing MSE", pch=19, type="b")
 
 #e
 which.min(val.errors)
-#16 parameter model has the smallest test MSE.
+#15 parameter model has the smallest test MSE.
+
 
 #f
 
-coef(ref.fit.best, id=16)
+coef(ref.fit.best, id=15)
+#It is different with the training MSE, because
+#As it stated, as more predictors in the model, the mean square error of training dataset
+#is increasing. However the test dataset is not.
+#it is consistant with my equation in a, because I put beta_3,beta_4,beta_9,beta_10,
+#beta-19 are equal to 0.The best subset result agrees with that.
 
 #g
+x_cols = colnames(x, do.NULL = FALSE, prefix = "x.")
 val.errors = rep(NA, p)
 c = rep(NA, p)
 d = rep(NA, p)
@@ -348,7 +363,6 @@ which.min(d)
 #Model with 9 coefficients (10 with intercept) minimizes the error between the estimated and true 
 #coefficients. Test error is minimized with 16 parameter model. A better fit of true coefficients
 #as measured here doesn't mean the model will have a lower test MSE.
-
 
 #11
 
