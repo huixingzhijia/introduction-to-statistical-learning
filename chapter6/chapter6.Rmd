@@ -1,0 +1,810 @@
+---
+title: "Chapter 6 Rmarkdow"
+author: "Wenhui Zeng"
+date: "February 10, 2017"
+output: pdf_document
+---
+
+#1
+
+##a
+
+Best subst selection has the smallest training RSS because the other two methods determine models with a path dependency on which predictors they pick first as they interate to the k'th model
+
+##b
+
+Best subset selection has the smallest test RSS because it considers more models than the other models. However, the other model might have better luck picking a model that fits the test data better.
+
+##c
+
+The predictors in the k-variable model identified by forward(backward) are a subset of the predictors in the (k+1) variable model identified by forward(backward) stepwise selection
+
+#2
+
+##a
+
+lasso: less flexible and hence will give improved prediction accuracy when its increase in bias is less than (less variance, more bias) than its decrease in variance.
+
+##b
+
+ridge regression: less flexible and hence will give improved prediction accuracy when its increase in bias is less thant its decrease in variance
+
+##c
+
+more flexible and hence will give improved prediction accuracy when its increase in variance is less than its decrease in bias
+
+#3
+
+##a
+
+steadily decrease: As we increase s from 0, all $\beta's$ increase from 0 to their least square estimate values.Training error from $\beta$ is the maxmium and it steadily decrease to the ordinary least square RSS. 
+
+##b
+
+Test RSS: Decrease initially and then eventually start increasing in a U shape. When s=0, all $\beta's$ are 0, the model is extremely simple and has a high test RSS. As we increase, $\beta's$ assume non-zero values and model starts fitting well on test and so test RSS decreases. Eventually, as $\beta's$ approach their full blown OLS value, they start overfitting to the training data, increasing test RSS.
+
+###c
+
+Variance: steadily increase, when s=0, the model effectively predicts a constant and has almost no variance. As we increase s, the model includes more $\beta's$ and their values start increasing. At this point, the values of $\beta$ become highly dependent on training data, thus increasing the variance.
+
+###d
+
+Squared bias: steadily decrease, when s=0, the model effectively predicts a constant and hence the prediction is far from actual value. Thus bias is high. As s increase, more $\beta's$ become non-zero and thus the model continues to fit training data better. Adn thus bias decreases
+
+###e
+
+Irreducible error remains constant. Irreducible error is model independent and hence irrespective of the choice of s, remains constant
+
+
+##4
+
+$$\sum_{i=1}^{n} y_i-\beta_0-\sum_{i=1}^{p} \beta_jX_{ij}$$ 
+
+
+
+
+subject to $$\sum_{j=1}^{p} |\beta_j| \leq s$$
+
+##a
+
+As we increase $\lambda$ from 0, the training RSS will steadily increase. As we increase $\lambda$ from 0, all $\beta's$ decrease from their least square estimate values to 0. Training error for full-brown-OLS $\beta's$ is the minimun and it steadily increases as $\beta's$ are reduced to 0.
+
+##b
+
+Test RSS decrease initially and enventually start increasing in a U shape, when $\lambda$ =0, all $\beta's$ have their least square estimate value. In this case, the model tries to fit hard to training data and hence test RSS is high. As we increase $\lambda$, $\beta's$ have their least square estimate value. In this case, the model tries to fit hard to training data and hence test RSS is high. As we increase $\lambda$ $\beta$ start reducing to zero and some of the overfitting is reduced. Thus, test RSS initially decreases. Eventually, as $\beta's$ approach 0.
+
+##c
+
+Variance steadily decrease, when $\lambda=0$, the $\beta's$ have their least square estimate value. The actual estimates heavily depend on the training data and hence variance is high. As we increase $\lambda$, $\beta's$ start decreasing and model becomes simpler. In the limiting case of $\lambda$ approaching infinity, all $\beta's$ reduce to zero and model predicts a constant and has no variance.
+
+##d
+
+bias steadily increase: when $\lambda=0$, $\beta's$ have their least-squre estimate values and hence have the least bias. As $\lambda$ increase, $\beta's$ start reducing towards zero, the model fits less accurately to training data and hence bias increases. In the limiting case of $\lambda$ approacing infinitely, the model predicts a constant and hence bias is maximum.
+
+##e
+
+Irreducible error, remains constant, by definition, irreducible error is model independent hence irrespective of choice of $\lambda$, remain constant
+
+
+#5
+
+##a
+
+A general form of ridge regression optimization looks like minimizie:
+
+$$\sum_{i=1}^{n} (y_i-\hat\beta_0-\sum_{j=1}^{p} \beta_jX_{ij})^2+\lambda\sum_{j=1}^{p}\hat\beta_j^2$$ 
+In this case, $\hat\beta_0=0$ and n=p=2, So the optimization looks like  
+
+$$\sum_{i=1}^{2} (y_i-\hat\beta_0-\sum_{j=1}^{2} \beta_jX_{ij})^2+\lambda\sum_{j=1}^{2}\hat\beta_j^2$$ 
+$$y=(y_1-\hat\beta_1x_{11}-\hat\beta_2x_{12})^2+(y_2-\hat\beta_1x_{21}-\hat\beta_2x_{22})^2+\lambda\hat\beta_1^2+\lambda\hat\beta_2^2$$
+##b
+
+Argue that in this setting, the ridge coefficient estimates satisfy $\hat\beta_1=\hat\beta_2$
+
+$x_{11}=x_{12}=x_1$ $x_{21}=x_{22}=x_2$
+
+Take derivative of y with respect to $\hat\beta_1$
+
+$$ \frac {d} {d\beta_1} f(y)=2(y_1-\hat\beta_1x_1-\hat\beta_2x_1)(-x_1)+2(y_2-\hat\beta_1x_2-\hat\beta_2x_2)(-x_2)+2\lambda\hat\beta_1$$
+
+$$=-2x_1y_1+2x_1^2\hat\beta_1+2\hat\beta_2 x_1^2-2x_2y_2+2\hat\beta_1x_2^2+2\beta_2x_2^2+2\lambda\hat\beta_1$$
+$$0=-x_1y_1+x_1^2\hat\beta_1+\hat\beta_2 x_1^2-2x_2y_2+\hat\beta_1x_2^2+\beta_2x_2^2+\lambda\hat\beta_1$$
+$$x_1y_1-\hat\beta_2 x_1^2+x_2y_2-\beta_2x_2^2=x_1^2\hat\beta_1+\hat\beta_1x_2^2+\lambda\hat\beta_1$$
+$$\hat\beta_1=\frac{x_1y_1+x_2y_2-\hat\beta_2(x_2^2+x_1^2)}{x_1^2+x_2^2+\lambda}$$
+Symmetry in these expression suggest that 
+$$\hat\beta_2=\frac{x_1y_1+x_2y_2-\hat\beta_1(x_2^2+x_1^2)}{x_1^2+x_2^2+\lambda}$$
+
+##c
+
+The lass optimization 
+$$\sum_{i=1}^{n} (y_i-\hat\beta_0-\sum_{j=1}^{p} \beta_jX_{ij})^2+\lambda\sum_{j=1}^{p}|\hat\beta_j|$$ 
+
+$$y=(y_1-\hat\beta_1x_{11}-\hat\beta_2x_{12})^2+(y_2-\hat\beta_1x_{21}-\hat\beta_2x_{22})^2+\lambda|\hat\beta_1|+\lambda|\hat\beta_2|$$
+
+
+##d
+
+This optimization problem has a simple solution: 
+we try to use an alternative solution:
+We use the alternate form of Lasso constraints $$|\beta_1|+|\beta_2|<s$$, which when plotted take the familiar shape of a diamond centered at origin (0,0)(0,0). Next consider the squared optimization constraint $$y=(y_1-\hat\beta_1x_{11}-\hat\beta_2x_{12})^2+(y_2-\hat\beta_1x_{21}-\hat\beta_2x_{22})^2+\lambda|\hat\beta_1|+\lambda|\hat\beta_2|$$. We use the facts $x_{11}=x_{12}=x_1$ $x_{21}=x_{22}=x_2$
+
+$x_{11}+x_{21}=0$
+$x_{11}+x_{21}=0$
+$x_{12}+x_{22}=0$
+$x_{12}+x_{22}=0$ 
+$y_1+y_2=0$
+$y_1+y_2=0$ to simplify it to
+
+Minimize: $$(y_1-(\hat\beta_1+\hat\beta_2)x_1)+(y_2-(\hat\beta_1+\hat\beta_2)x_2)$$
+ 
+
+
+
+
+This is a line parallel to the edge of Lasso-diamond $\hat{\beta_1} + \hat{\beta_2} = s$ 
+Now solutions to the original Lasso optimization problem are contours of the function 
+$(y_1 - (\hat{\beta_1} + \hat{\beta_2})x_1)^2$
+
+that touch the Lasso-diamond 
+$\hat{\beta}1 + \hat{\beta}_2 = s$
+
+Finally, these contours touch the Lasso-diamond edge $\hat{\beta}_1 + \hat{\beta}_2 = s$ at different points. As a result, the entire edge $\hat{\beta}_1 + \hat{\beta}_2 = s$ is a potential solution to the Lasso optimization problem!
+
+Similar argument can be made for the opposite Lasso-diamond edge: $\hat{\beta}_1 + \hat{\beta}_2 = -s$
+
+Thus, the Lasso problem does not have a unique solution. The general form of solution is given by two line segments:
+
+$\hat{\beta}_1 + \hat{\beta}_2 = s; \hat{\beta}_1 \geq 0; \hat{\beta}_2 \geq 0$ and $\hat{\beta}_1 + \hat{\beta}_2 = -s; \hat{\beta}_1 \leq 0; \hat{\beta}_2 \leq 0$
+
+##6
+
+###a
+For p=1 (6.12) takes the form $$(y-\beta)^2+\lambda\beta_2(y-\beta)^2+\lambda\beta_2$$. 
+
+We plot this function for $y=2$ $\lambda=2$
+```{r,echo=F,warning=F}
+y = 2
+lambda = 2
+betas = seq(-10, 10, 0.1)
+func = (y - betas)^2 + lambda * betas^2
+plot(betas, func, pch = 20, xlab = "beta", ylab = "Ridge optimization")
+est.beta = y/(1 + lambda)
+est.func = (y - est.beta)^2 + lambda * est.beta^2
+points(est.beta, est.func, col = "red", pch = 4, lwd = 5, cex = est.beta)
+```
+
+The red cross shows that function is indeed minimized at $$\beta=\frac{y}{1+\lambda}$$
+
+##b
+p=1 (6.13) takes the form $$(y-\beta)^2+\lambda|\beta|$$ We plot this function for $y=2$,$\lambda=2$
+```{r,echo=F,warning=F,fig.width=4, fig.height=5}
+lambda = 2
+betas = seq(-3, 3, 0.01)
+func = (y - betas)^2 + lambda * abs(betas)
+plot(betas, func, pch = 20, xlab = "beta", ylab = "Lasso optimization")
+est.beta = y - lambda/2
+est.func = (y - est.beta)^2 + lambda * abs(est.beta)
+points(est.beta, est.func, col = "red", pch = 4, lwd = 5, cex = est.beta)
+```
+
+The red cross shows that function is indeed minimized at $\beta=y-\frac{\lambda}{2}$ 
+
+#7
+The likelihood for the data is
+
+$$L(\theta|\beta)=p(\beta|\theta)=p(\beta_1|\theta)\times\cdots \times p(\beta_n|\theta)=\prod_{n=1}^np(\beta_i|\theta)$$
+$$=\prod_{n=1}^n\frac{1}{\sigma\sqrt{2\pi}}\exp(-\frac{Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})}{2\sigma^2})$$
+
+
+
+
+
+$$=(\frac{1}{\sigma\sqrt{2\pi}})^n\exp(-\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij}]^2)$$
+
+
+##b
+
+The posterior with double exponential with mean 0 and common scale parameter $b$ $p(\beta)=\frac{1}{2b}\exp(-\frac{|\beta|}{b})$ is
+
+$$=(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{2b})\exp(-\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij}]^2-\frac{|\beta|}{b})$$
+
+##c
+
+ Lasso estimate for $\beta$ is the mode under this posterior distribution is the same thing as showing that the most likely value for $\beta$ is given by the lasso solution with a certain $\lambda$.
+
+We can do this by taking our likelihood and posterior and showing that it can be reduced to use the log transform
+
+$$\log f(Y|X,\beta)p(\beta)=\log[(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{2b})\exp(-\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2-\frac{|\beta|}{b})$$
+$$\log f(Y|X,\beta)p(\beta)=\log[(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{2b})]-(\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2-\frac{|\beta|}{b})$$
+
+We try to maxmize the above equation, it equivalent to taking the difference of the second value in terms of $\beta$ It result in
+
+$$\min f(Y|X,\beta)=\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})^2-\frac{|\beta|}{b}]$$
+$$\min f(Y|X,\beta)=\frac{1}{2\sigma^2}(\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2+\frac{2\sigma^2}{b}\sum_{j=1}^{p}|\beta_j|)$$
+if $\lambda=\frac{2\sigma^2}{b}$
+$$\min f(Y|X,\beta)=\arg\min RSS+\lambda\sum_{j=1}^{p}|\beta_j|$$
+When the posterior comes from a Laplace distribution with mean zero and common scale parameter bb, the mode for ???? is given by the Lasso solution when $\lambda=\frac{2\sigma^2}{b}$
+
+##d
+
+The posterior distributed according to normal distribution with mean zero and variance c. the distribution function becomes:
+$$f(Y|X,\beta)p(\beta)\propto f(Y|X,\beta)p(\beta|X)=f(Y|X,\beta)p(\beta)$$
+
+$$p(\beta)=\prod_{n=1}^pp(\beta_i)=\prod_{n=1}^p\frac{1}{\sqrt{2\pi c}}\exp(-\frac{\beta_i^2}{2c})=(\frac{1}{\sqrt{2\pi c})})^p\exp(-\frac{1}{2c}\sum_{i=1}^{p}\beta_i^2)$$
+Substitue our values from a and our density function gives
+
+
+$$f(Y|X,\beta)p(\beta)=[(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{\sqrt{2c\pi}})^p\exp(-\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2-\frac{1}{2c}\sum_{i=1}^{p}\beta_i^2))$$
+
+##e
+
+Like from part c, showing that the Ridge regression estimate for $\beta$ is the mode and mean under this posterior distribution is the same thing as showing that the most likely value for $\beta$ is given by the lasso solution with a certain $\lambda$. We can do this by taking our likelihood and posterior and showing that it can be reduced to the canonical ridge Regression. Take the log form
+
+$$\log f(Y|X,\beta)p(\beta)=\log [(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{\sqrt{2c\pi}})^p-(\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2-\frac{1}{2c}\sum_{i=1}^{p}\beta_i^2)$$
+
+$$\arg \max_\beta\log f(Y|X,\beta)p(\beta)=\arg \max_\beta\log [(\frac{1}{\sigma\sqrt{2\pi}})^n(\frac{1}{\sqrt{2c\pi}})^p-(\frac{1}{2\sigma^2}\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2-\frac{1}{2c}\sum_{i=1}^{p}\beta_i^2)$$
+
+Since we are taking the difference of two values, the maximum of this value is the equivalent to minimize the second value in terms of $\beta$.
+
+
+$$\arg \min_\beta\frac{1}{2\sigma^2}\sum_{i=1}^{n}([Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2+\frac{1}{2c}\sum_{i=1}^{p}\beta_i^2)$$
+
+$$\arg \min_\beta(\frac{1}{2\sigma^2})(\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2+\frac{\sigma^2}{c}\sum_{i=1}^{p}\beta_i^2)$$
+
+By letting $\lambda=\frac{\sigma^2}{c}$, we end up with:
+
+$$\arg \min_\beta(\frac{1}{2\sigma^2})(\sum_{i=1}^{n}[Y_i-(\beta_0+\sum_{j=1}^p\beta_jX_{ij})]^2+\lambda\sum_{i=1}^{p}\beta_i^2)=\arg \min_\beta RSS+\lambda\sum_{i=1}^{p}\beta_i^2$$
+
+According to the Ridge Regression from Equation 6.5 in the book. Thus we know that when the posterior comes from a normal distribution with mean zero and variance c, the mode for $\beta$ is given by the Ridge Regression solution when $\lambda=\frac{\sigma^2}{c}$, Since the posterior is Gaussian, we also know that it is the posterior mean.
+
+
+#8 
+##a
+```{r,warning=F}
+library(leaps)
+library(glmnet)
+library(pls)
+library(ISLR)
+library(MASS)
+
+set.seed(1)
+x=rnorm(100)
+eps=rnorm(100)
+```
+
+##b
+```{r,warning=F}
+beta_0=1
+beta_1=2
+beta_2=4
+beta_3=5
+y=beta_0+beta_1*x+beta_2*x^2+beta_3*x^3+eps
+```
+
+##c
+```{r,warning=F}
+data<-data.frame(x,y)
+bestsubset<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10)
+bs.summary<-summary(bestsubset)
+#create a function:
+plot.bestsummary <- function(reg.summary) {
+  par(mfrow = c(2, 2), mar = c(5, 5, 1, 1))
+  plot(reg.summary$rss, xlab = "Number of Variables", ylab = "RSS", type = "l")
+  plot(reg.summary$adjr2, xlab = "Number of Variables", 
+       ylab = expression(paste("Adjusted ", R^2)), type = "l")
+  points(which.max(reg.summary$adjr2), 
+         reg.summary$adjr2[which.max(reg.summary$adjr2)], 
+         col = "red", cex = 2, pch = 20)
+  plot(reg.summary$cp, xlab = "Number of Variables", ylab = expression(C[p]), 
+       type = "l")
+  points(which.min(reg.summary$cp), 
+         reg.summary$cp[which.min(reg.summary$cp)], 
+         col = "red", cex = 2, pch = 20)
+  plot(reg.summary$bic, xlab = "Number of Variables", ylab = "BIC", type = "l")
+  points(which.min(reg.summary$bic), 
+         reg.summary$bic[which.min(reg.summary$bic)], 
+         col = "red", cex = 2, pch = 20)
+}
+
+plot.bestsummary(bs.summary)
+```
+
+Using adjusted-Rsquare,number of variable is 4 gives the maximum adjusted R square, but we can see there is no much difference between 3 and 4 variables. 
+
+Using AIC method
+
+```{r,warning=F}
+plot(bs.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
+which.min(bs.summary$cp)
+points(3,bs.summary$cp[3],col="red",cex=2,pch=20)
+```
+
+number of variable is 3 gives the minimum AIC 
+
+Using BIC method
+
+```{r,warning=F}
+plot(bs.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
+which.min(bs.summary$bic)
+points(3,bs.summary$bic[3],col="red",cex=2,pch=20)
+```
+
+number of variable is 3 gives the minimum BIC
+
+So the 3 variable model will give the best model 
+```{r,warning=F}
+coef(bestsubset,3)
+```
+
+##d
+
+use the method="forward"
+```{r,warning=F}
+regfit.fwd<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10,method="forward")
+fwd.summary<-summary(regfit.fwd)
+```
+
+foward adjust R square
+```{r,warning=F}
+a<-plot(fwd.summary$adjr2,xlab="Number of variables",ylab="Adjusted RSQ",type="l")
+which.max(fwd.summary$adjr2)
+points(4,fwd.summary$adjr2[4],col="red",cex=2,pch=20)
+plot(fwd.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
+which.min(fwd.summary$cp)
+points(4,fwd.summary$cp[4],col="red",cex=2,pch=20)
+```
+
+number of variable is 4 gives the minimum AIC 
+
+Using BIC method
+
+```{r,warning=F}
+plot(fwd.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
+which.min(fwd.summary$bic)
+points(3,fwd.summary$bic[3],col="red",cex=2,pch=20)
+```
+
+number of variable is 3 gives the minimum BIC
+
+So the 4 variable model will give the best model 
+```{r,warning=F}
+coef(regfit.fwd,4)
+```
+
+Backward
+```{r,warning=F}
+regfit.bwd<-regsubsets(y~poly(x,10,raw=T),data=data,nvmax=10,method="backward")
+bwd.summary<-summary(regfit.bwd)
+```
+
+
+backward adjust R square
+```{r,warning=F}
+plot(bwd.summary$adjr2,xlab="Number of variables",ylab="Adjusted RSQ",type="l")
+which.max(bwd.summary$adjr2)
+points(4,bwd.summary$adjr2[4],col="red",cex=2,pch=20)
+```
+
+Using AIC method
+```{r,warning=F}
+plot(bwd.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
+which.min(bwd.summary$cp)
+points(4,bwd.summary$cp[4],col="red",cex=2,pch=20)
+```
+
+number of variable is 4 gives the minimum AIC 
+
+Using BIC method
+```{r,warning=F}
+plot(bwd.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
+which.min(bwd.summary$bic)
+points(3,bwd.summary$bic[3],col="red",cex=2,pch=20)
+```
+
+number of variable is 3 gives the minimum BIC
+
+So the 4 variable model will give the best model 
+```{r,warning=F}
+coef(regfit.bwd,4)
+```
+
+The backward method pick 4 variables, they are X^1,x^2,x^3,x^9. the forward pick 4 variables, 
+they are X^1,x^2,x^3,x^5. The best subset pick 3 variables, they are X^1,x^2,x^3.
+
+##e
+```{r,warning=F}
+x.matrix<-model.matrix(y~poly(x,10,raw=T),data)[,-1]
+set.seed(1)
+cv.lasso.mod<-cv.glmnet(x.matrix,y,alpha=1)
+```
+
+coefficient plot that depending on the choice of tuning parameter, some of the coefficients will be exactly equal to zero
+
+```{r,warning=F}
+best.lam<-cv.lasso.mod$lambda.min
+best.lam
+best.model<-glmnet(x.matrix,y,alpha=1)
+```
+
+using the type=coefficients to run on the whole data set, But if you substitute type=coefficients using 
+newx=testdataset, you test the model on the test dataset
+
+```{r,warning=F}
+lasso.pred<-predict(best.model,s=best.lam,type="coefficient")
+plot(cv.lasso.mod)
+lasso.pred
+```
+
+lasso picks X,x^2,x^3, x^5,x^7 with negligible coefficients
+
+##f
+
+```{r,warning=F}
+beta_7=3.5
+y=beta_0+beta_7*x^7+eps
+
+data<-data.frame(x,y)
+
+best.subset<-regsubsets(y~poly(x,10),data=data,nvmax=10)
+b.summary<-summary(best.subset)
+
+#using adjusted-Rsquare
+plot(b.summary$adjr2,xlab="Number of variables",ylab="Adjusted RSQ",type="l")
+which.max(b.summary$adjr2)
+points(7,b.summary$adjr2[7],col="red",cex=2,pch=20)
+
+
+#Using AIC method
+plot(b.summary$cp,xlab="Number of Variables",ylab="AIC",type="l")
+which.min(b.summary$cp)
+points(7,b.summary$cp[7],col="red",cex=2,pch=20)
+#number of variable is 3 gives the minimum AIC 
+
+#Using BIC method
+plot(b.summary$bic,xlab="Number of Variables",ylab="BIC",type="l")
+which.min(b.summary$bic)
+points(7,b.summary$bic[7],col="red",cex=2,pch=20)
+#number of variable is 7 gives the minimum BIC
+
+#So the 7 variable model will give the best model 
+coef(best.subset,7)
+#poly(x, 10)1 poly(x, 10)2 poly(x, 10)3 poly(x, 10)4 poly(x, 10)5 poly(x, 10)6 poly(x, 10)7 
+```
+
+#f 
+
+lasso
+```{r,warning=F}
+x.matrix<-model.matrix(y~poly(x,10,raw=T),data)[,-1]
+set.seed(1)
+cv.lasso<-cv.glmnet(x.matrix,y,alpha=1)
+best.lam<-cv.lasso$lambda.min
+best.lam
+best.model<-glmnet(x.matrix,y,alpha=1)
+lasso.pred<-predict(best.model,s=best.lam,type="coefficient")
+lasso.pred
+```
+
+coefficient plot that depending on the choice of tuning parameter, some of the coefficients will be exactly equal to zero
+using the type=coefficients to run on the whole data set, But if you substitute type=coefficients using 
+newx=testdataset, you test the model on the test dataset
+lasso picks x^7 as the only predictors. Best subset picks 
+poly(x, 10)1 poly(x, 10)2 poly(x, 10)3 poly(x, 10)4 poly(x, 10)5 poly(x, 10)6 poly(x, 10)7 
+
+#9
+
+##a
+```{r,warning=F}
+sum(is.na(College))
+#there is no missing variables
+set.seed(1)
+train<-sample(1:dim(College)[1],dim(College)[1]/2)
+test=!train
+train<-College[train,]
+test<-College[test,]
+y.test<-test$Apps
+y.train<-train$Apps
+```
+
+##b
+```{r,warning=F}
+lm.college<-lm(Apps~.,data=train)
+lm.pred<-predict(lm.college,test)
+mean((y.test-lm.pred)^2)
+```
+
+The test error is 1480089
+
+##c
+
+In general we could choose lambda using the built-in cross-validation function,cv.glmnet()
+by default, the function performs ten-fold cross-validation,(cv.glmnet) though this can be changed using the argument folds
+```{r,warning=F}
+set.seed(1)
+train.mat<-model.matrix(Apps~.,data=train)
+test.mat<-model.matrix(Apps~.,data=test)
+grid<-10^seq(10,-2,length=100)
+cv.out<-cv.glmnet(train.mat,y.train,alpha=0,lambda=grid,thresh=1e-12)
+plot(cv.out)
+bestlam<-cv.out$lambda.min
+bestlam
+```
+
+therefore the value of lambda that results in the smallest cross-validation error is 212. what is MSE associated with this value of lambda
+```{r,warning=F}
+ridge.model<-glmnet(train.mat,y.train,alpha=0,lambda=grid)
+ridge.pred<-predict(ridge.model,s=bestlam,newx=test.mat)
+mean((ridge.pred-y.test)^2)
+```
+
+the test error is 1108447, there is improvement from least square 
+
+##d
+```{r,warning=F}
+set.seed(1)
+x.mat<-model.matrix(Apps~.,data=College)
+y<-College$Apps
+train.mat<-model.matrix(Apps~.,data=train)
+test.mat<-model.matrix(Apps~.,data=test)
+grid<-10^seq(10,-2,length=100)
+cv.out<-cv.glmnet(train.mat,y.train,alpha=1,lambda=grid,thresh=1e-12)
+bestlam<-cv.out$lambda.min
+bestlam#24.77076
+lasso.model<-glmnet(train.mat,y.train,alpha=1,lambda=grid)
+lasso.pred<-predict(lasso.model,s=bestlam,newx=test.mat)
+mean((lasso.pred-y.test)^2)
+
+#using the full data
+model<-glmnet(x.mat,y,alpha=1,lambda=grid)
+lasso.coef<-predict(model,type="coefficients",s=bestlam)
+lasso.coef
+```
+
+the test error is 1031919, there is improvement from least square and also better than ridge regression
+
+##e
+```{r,warning=F}
+set.seed(1)
+pcr.fit<-pcr(Apps~.,data=train,scale=TRUE,valiation="CV")
+validationplot(pcr.fit,val.type="MSEP")
+summary(pcr.fit)
+```
+
+from the plot we can see that M=10 explained good variability
+
+lowest cross-validation error occus when M=7, compute the test MSE
+```{r,warning=F}
+pcr.pred<-predict(pcr.fit,test,ncomp=10)
+mean((pcr.pred-y.test)^2)
+```
+
+the test error about 1505718,M is 10
+
+##f
+
+Partial Least Squares
+```{r,warning=F}
+set.seed(1)
+pls.fit<-plsr(Apps~.,data=train,scale=TRUE,valiation="CV")
+summary(pls.fit)
+validationplot(pls.fit,val.type = "MSEP")
+pls.pred<-predict(pls.fit,test,ncomp=5)
+mean((pls.pred-y.test)^2)
+```
+
+The test error is 1158597 and the M is 5.
+The lowest cross-validation error occurs when only M=2 partial least squares directions are used.
+
+##g
+```{r,warning=F}
+lm.test.error <- mean((y.test-lm.pred)^2)
+ridge.test.error <- mean((ridge.pred-y.test)^2)
+lasso.test.error <- mean((lasso.pred-y.test)^2)
+pcr.test.error<- mean((pcr.pred-y.test)^2)
+pls.test.error <- mean((pls.pred-y.test)^2)
+#barplot(log(c(lm.test.error, ridge.test.error, lasso.test.error, pcr.test.error, pls.test.error)), col="red", names.arg=c("OLS", "Ridge", "Lasso", "PCR", "PLS"), main="Test error")
+```
+
+The plot shows that PCR gives the higest test error, Lasso gives the lowest test error.OLS, and PLS are almost same
+Expected PCR, there are not too much difference.
+
+#10
+##a
+```{r,warning=F}
+set.seed(1)
+p = 20
+n = 1000
+x = matrix(rnorm(n * p), n, p)
+B = rnorm(p)
+B[3] = 0
+B[4] = 0
+B[9] = 0
+B[19] = 0
+B[10] = 0
+eps = rnorm(p)
+y = x %*% B + eps
+```
+
+##b
+```{r,warning=F}
+train<-sample(seq(1000),100,replace = F)
+y.train=y[train,]
+y.test=y[-train,]
+x.train=x[train,]
+x.test=x[-train,]
+data<-data.frame(x=x.train,y=y.train)
+```
+
+##c
+```{r,warning=F}
+# perform best subsets selection on training subset
+ref.fit.best <- regsubsets(y ~ ., data = data.train, nvmax = p)
+# now create model matrix (matrix of x variables) from test data
+test.mat <- model.matrix(y ~.,data = data.train)
+# create empty vector to hold Test MSE for each model
+val.errors <- rep(NA, p)
+# loop through each model (1:19), calculating validation error for each:
+for (i in 1:p){
+  coefi <- coef(ref.fit.best, id = i)
+  pred <- test.mat[ , names(coefi)] %*% coefi
+  val.errors[i] <- mean((y.train-pred)^2)
+}
+
+plot(val.errors, ylab="Training MSE", pch=19, type="b")
+which.min(val.errors)
+coef(ref.fit.best, 10)
+
+```
+
+##d
+```{r,warning=F}
+# create empty vector to hold Test MSE for each model
+val.errors <- rep(NA, p)
+test.mat <- model.matrix(y ~.,data = data.test)
+# loop through each model (1:20), calculating validation error for each:
+for (i in 1:p){
+  coefi <- coef(ref.fit.best, id = i)
+  pred <- test.mat[ , names(coefi)] %*% coefi
+  val.errors[i] <- mean((y.test-pred)^2)
+}
+
+plot(val.errors, ylab="Testing MSE", pch=19, type="b")
+```
+
+
+##e
+```{r,warning=F}
+which.min(val.errors)
+```
+
+15 parameter model has the smallest test MSE.
+
+##f
+```{r,warning=F}
+coef(ref.fit.best, id=15)
+```
+
+It is different with the training MSE, because
+As it stated, as more predictors in the model, the mean square error of training ataset
+is increasing. However the test dataset is not.
+it is consistant with my equation in a, because I put beta_3,beta_4,beta_9,beta_10,
+beta-19 are equal to 0.The best subset result agrees with that.
+
+
+##g
+```{r,warning=F}
+val.errors = rep(NA, p)
+c = rep(NA, p)
+d = rep(NA, p)
+for (i in 1:p) {
+  coefi = coef(ref.fit.best, id = i)
+  c[i] = length(coefi) - 1
+  d[i] = sqrt(sum((B[x_cols %in% names(coefi)] - coefi[names(coefi) %in% x_cols])^2) + 
+                sum(B[!(x_cols %in% names(coefi))])^2)
+}
+plot(x = c, y = d, xlab = "No. of coefficients", ylab = "Error between estimated and true coefficients")
+
+which.min(d)
+```
+
+Model with 9 coefficients (10 with intercept) minimizes the error between the estimated and true 
+coefficients. Test error is minimized with 16 parameter model. A better fit of true coefficients
+as measured here doesn't mean the model will have a lower test MSE.
+
+
+##11
+
+best subset selection
+```{r,warning=F}
+predict.regsubsets = function(object, newdata, id, ...) {
+  form = as.formula(object$call[[2]])
+  mat = model.matrix(form, newdata)
+  coefi = coef(object, id = id)
+  mat[, names(coefi)] %*% coefi
+}
+
+k = 10
+p = ncol(Boston) - 1
+folds = sample(rep(1:k, length = nrow(Boston)))
+cv.errors = matrix(NA, k, p)
+for (i in 1:k) {
+  best.fit = regsubsets(crim ~ ., data = Boston[folds != i, ], nvmax = p)
+  for (j in 1:p) {
+    pred = predict(best.fit, Boston[folds == i, ], id = j)
+    cv.errors[i, j] = mean((Boston$crim[folds == i] - pred)^2)
+  }
+}
+rmse.cv = sqrt(apply(cv.errors, 2, mean))
+plot(rmse.cv, pch = 19, type = "b")
+```
+
+we can see that 9 parameter gives the lowest RMSE
+
+Lasso
+```{r,warning=F}
+x<-model.matrix(crim~.-1,data=Boston)
+y<-Boston$crim
+cv.lasso<-cv.glmnet(x,y,alpha=1)
+plot(cv.lasso)
+coef(cv.lasso)
+cv.lasso$lambda.min
+sqrt(cv.lasso$cvm[cv.lasso$lambda == cv.lasso$lambda.1se])
+```
+
+test error 7.428573
+
+Ridge
+```{r,warning=F}
+cv.ridge<-cv.glmnet(x,y,alpha=0)
+plot(cv.ridge)
+coef(cv.ridge)
+cv.lasso$lambda.min
+sqrt(cv.ridge$cvm[cv.ridge$lambda == cv.ridge$lambda.1se])
+```
+
+test error 7.893898
+
+PCR
+```{r,warning=F}
+pcr.fit<-pcr(crim~.-1,data=Boston,scale=TRUE,validation="CV")
+summary(pcr.fit)
+```
+
+13 component pcr fit has lowest CV/adjCV RMSEP.
+
+##d-c
+
+I would choose the 9 parameter best subset model because it had the best cross-validated RMSE, also it was simpler.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
